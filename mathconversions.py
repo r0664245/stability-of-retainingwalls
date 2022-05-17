@@ -10,9 +10,15 @@ def rad_dg(phi_dg):
 def s(x):
     s = math.sin(x)
     return s
+def sh(x):
+    sh = math.sinh(x)
+    return sh
 def c(x):
     c= math.cos(x)
     return c
+def ch(x):
+    ch = math.cosh(x)
+    return ch
 def s2(x):
     s2 = (math.sin(x))**2
     return s2
