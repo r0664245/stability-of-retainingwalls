@@ -61,10 +61,11 @@ from MO import d2
 from MO import theta_EA
 from MO import theta_EP
 from MO import Keq
+from WaveProb import waveprob
 
 
 st.title('The Stability of retaining walls')
-mode = st.selectbox('What are you interested in',['Ka - Kp','Stress Distribution','Total Force','Dynamic calculations Mononbe-Okabe'])
+mode = st.selectbox('What are you interested in',['Ka - Kp','Stress Distribution','Total Force','Dynamic calculations Mononbe-Okabe','Wave propagation'])
 
 if mode == 'Ka - Kp':
     method = st.selectbox('Which method ?',
@@ -722,13 +723,13 @@ if mode == 'Total Force':
             phi = dg_rad(x)
             ka = KASR(phi)
             kp = KPSR(phi)
-            F = FKA(ka,H,gamma)
-            F = FKP(kp,H,gamma)
+            Fa = FKA(ka,H,gamma)
+            Fp = FKP(kp,H,gamma)
 
             list_phi.append(x)
             list_phi.append(x)
-            list_F.append(ka)
-            list_F.append(kp)
+            list_F.append(Fa)
+            list_F.append(Fp)
             legend.append('Active Force')
             legend.append('Passive Force')
 
@@ -2069,5 +2070,28 @@ if mode == 'Dynamic calculations Mononbe-Okabe':
             )
         )
         st.altair_chart(chart_mop, use_container_width=True)
+
+if mode == 'Wave propagation':
+    u_g0 = st.sidebar.slider('Ground acceleration [m/s²]',0.0,10.0,1.0,0.1)
+    freq = st.sidebar.slider('Frequentie [Hz]',0.1,10.0,2.0,0.01)
+    H = st.sidebar.slider('Height [m]',1,20,5,)
+    V = st.sidebar.slider('Veloscity [m/s]',0,20,5)
+    beta = st.sidebar.slider('Ground damping ratio',0.0,1.0,0.05,0.005)
+    t = st.sidebar.slider('Time',0.0,1.0,0.0,0.001)
+    L = st.sidebar.slider('Maximum length [m]',5,100,5)
+    wave = waveprob(u_g0,freq,H,V,beta,t,L)
+    chart_wave = (
+        alt.Chart(wave).mark_line(order = False).encode(
+            y=alt.Y('Depth', axis=alt.Axis(title='Depth [m]')),
+            x=alt.X('Displacement', axis=alt.Axis(title='Displacements [m]')),
+            color=alt.Color('legend')
+
+        ).properties(
+            title='1D - Wave propigations'
+        )
+    )
+    st.altair_chart(chart_wave, use_container_width=True)
+
+
 
 
